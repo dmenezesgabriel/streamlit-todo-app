@@ -83,7 +83,8 @@ def get_data():
         }
         for todo in todos
     ]
-    return pd.DataFrame(data).reset_index(drop=True).set_index("id")
+    # return pd.DataFrame(data).reset_index(drop=True).set_index("id")
+    return pd.DataFrame(data)
 
 
 def main():
@@ -129,13 +130,20 @@ def main():
         st.stop()
 
     with st.expander("Select visible columns"):
+        columns_to_not_show = ["id"]
+        filtered_columns_list = list(
+            filter(lambda x: x not in columns_to_not_show, list(data.columns))
+        )
         selected_columns = st.multiselect(
             "Choose columns",
-            options=list(data.columns),
-            default=list(data.columns),
+            options=filtered_columns_list,
+            default=filtered_columns_list,
+            # options=list(data.columns),
+            # default=list(data.columns),
         )
 
     column_config = {
+        "id": None,
         "title": st.column_config.TextColumn(
             "🎯 Title",
         ),
@@ -169,7 +177,8 @@ def main():
     for row_position, changed_attributes in edited_rows.items():
         # old_row = data.iloc[row_position]
         new_row = edited_df.iloc[row_position]
-        index = new_row.name
+        # index = new_row.name # get the field set as index of dataframe
+        index = new_row["id"]
         new_row_dict = new_row.to_dict()
         if new_row_dict["delete"]:
             delete_todo(index)
