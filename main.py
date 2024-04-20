@@ -128,20 +128,34 @@ def main():
         st.warning("No TODOs, add above")
         st.stop()
 
+    with st.expander("Select visible columns"):
+        selected_columns = st.multiselect(
+            "Choose columns",
+            options=list(data.columns),
+            default=list(data.columns),
+        )
+
+    column_config = {
+        "title": st.column_config.TextColumn(
+            "🎯 Title",
+        ),
+        "completed": st.column_config.CheckboxColumn(
+            "✅ Completed",
+        ),
+        "delete": st.column_config.CheckboxColumn(
+            "❌ Delete",
+        ),
+        # "delete": None,  # Hides Column
+    }
+
+    for column in column_config.keys():
+        if column not in selected_columns:
+            column_config[column] = None
+
     edited_df = st.data_editor(
         data,
         key="data_editor",
-        column_config={
-            "title": st.column_config.TextColumn(
-                "🎯 Title",
-            ),
-            "completed": st.column_config.CheckboxColumn(
-                "✅ Completed",
-            ),
-            "delete": st.column_config.CheckboxColumn(
-                "❌ Delete",
-            ),
-        },
+        column_config=column_config,
         use_container_width=True,
         num_rows="fixed",
         hide_index=True,
