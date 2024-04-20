@@ -100,7 +100,7 @@ def main():
 
     if not len(data):
         st.warning("No TODOs, add above")
-        return
+        st.stop()
 
     edited_df = st.data_editor(
         data,
@@ -109,7 +109,7 @@ def main():
             "title": st.column_config.TextColumn(
                 "Title",
             ),
-            "completed": st.column_config.NumberColumn(
+            "completed": st.column_config.CheckboxColumn(
                 "Completed",
             ),
         },
@@ -120,16 +120,18 @@ def main():
 
     data_editor_events = st.session_state.data_editor
     edited_rows = data_editor_events["edited_rows"]
-    if edited_rows:
-        for row_position, changed_attributes in edited_rows.items():
-            # old_row = data.iloc[row_position]
-            new_row = edited_df.iloc[row_position]
-            index = new_row.name
-            new_row_dict = new_row.to_dict()
-            update_todo(index, **new_row_dict)
-            st.rerun()
-            # id = row.name
-            # changed_attributes
+
+    if not edited_rows:
+        return
+    for row_position, changed_attributes in edited_rows.items():
+        # old_row = data.iloc[row_position]
+        new_row = edited_df.iloc[row_position]
+        index = new_row.name
+        new_row_dict = new_row.to_dict()
+        update_todo(index, **new_row_dict)
+        st.rerun()
+        # id = row.name
+        # changed_attributes
 
 
 if __name__ == "__main__":
