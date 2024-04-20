@@ -75,7 +75,12 @@ def delete_todo(id: str):
 def get_data():
     todos = get_todos()
     data = [
-        {"id": todo.id, "title": todo.title, "completed": todo.completed}
+        {
+            "id": todo.id,
+            "title": todo.title,
+            "completed": todo.completed,
+            "delete": False,
+        }
         for todo in todos
     ]
     return pd.DataFrame(data).reset_index(drop=True).set_index("id")
@@ -83,7 +88,7 @@ def get_data():
 
 def main():
     st.set_page_config(
-        page_title="TODO CRUD", page_icon=":guardsman:", layout="wide"
+        page_title="TODO CRUD", page_icon=":white_check_mark:", layout="wide"
     )
 
     if st.button("Refresh"):
@@ -107,10 +112,13 @@ def main():
         key="data_editor",
         column_config={
             "title": st.column_config.TextColumn(
-                "Title",
+                "🎯 Title",
             ),
             "completed": st.column_config.CheckboxColumn(
-                "Completed",
+                "✅ Completed",
+            ),
+            "delete": st.column_config.CheckboxColumn(
+                "❌ Delete",
             ),
         },
         use_container_width=True,
@@ -128,10 +136,16 @@ def main():
         new_row = edited_df.iloc[row_position]
         index = new_row.name
         new_row_dict = new_row.to_dict()
-        update_todo(index, **new_row_dict)
+        if new_row_dict["delete"]:
+            delete_todo(index)
+        else:
+            update_todo(
+                id=index,
+                title=new_row_dict["title"],
+                completed=new_row_dict["completed"],
+            )
+
         st.rerun()
-        # id = row.name
-        # changed_attributes
 
 
 if __name__ == "__main__":
