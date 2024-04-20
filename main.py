@@ -88,20 +88,41 @@ def get_data():
 
 def main():
     st.set_page_config(
-        page_title="TODO CRUD", page_icon=":white_check_mark:", layout="wide"
+        page_title="TODO CRUD",
+        page_icon=":white_check_mark:",
+        layout="centered",
     )
-
-    if st.button("Refresh"):
-        st.rerun()
 
     data = get_data()
 
-    with st.popover("Add TODO"):
-        with st.form("Add TODO", border=False):
-            title = st.text_input("Title")
-            if st.form_submit_button("Submit"):
-                create_todo(title)
+    st.html(  # Bad practice mess with st guts, but it's just an example
+        """
+        <style>
+            div[data-testid="column"] {
+                width: fit-content !important;
+                flex: unset;
+            }
+            div[data-testid="column"] * {
+                width: fit-content !important;
+            }
+        </style>
+        """,
+    )
+
+    st.header("🧗 TODO CRUD", divider="rainbow")
+    with st.container():
+        columns = st.columns([1, 1])
+        with columns[0]:
+            if st.button("⟳ Refresh"):
                 st.rerun()
+
+        with columns[1]:
+            with st.popover("➕ New"):
+                with st.form("Add TODO", border=False):
+                    title = st.text_input("Title")
+                    if st.form_submit_button("Submit"):
+                        create_todo(title)
+                        st.rerun()
 
     if not len(data):
         st.warning("No TODOs, add above")
