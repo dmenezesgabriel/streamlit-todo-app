@@ -1,3 +1,4 @@
+from typing import cast
 from uuid import uuid4
 
 import pandas as pd
@@ -56,8 +57,8 @@ def update_todo(id: str, title: str, completed: int):
     db = SessionLocal()
     todo = db.query(Todo).filter(Todo.id == id).first()
     if todo:
-        todo.title = title
-        todo.completed = completed
+        todo.title = cast(Column["str"], title)
+        todo.completed = cast(Column["int"], completed)
         db.commit()
     db.close()
 

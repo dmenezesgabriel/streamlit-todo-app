@@ -1,0 +1,4 @@
+-r requirements.txt
+
+pandas-stubs==2.2.1.240316
+mypy==1.9.0
