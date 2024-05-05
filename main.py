@@ -110,7 +110,7 @@ def main():
         """,
     )
 
-    st.header("🧗 TODO CRUD", divider="rainbow")
+    st.header(" TODO CRUD", divider="rainbow")
     with st.container():
         columns = st.columns([1, 1])
         with columns[0]:
@@ -126,7 +126,7 @@ def main():
                         st.rerun()
 
     if not len(data):
-        st.warning("No TODOs, add above")
+        st.warning("No TODOs, add above", icon=":material/warning:")
         st.stop()
 
     with st.expander("Select visible columns"):
